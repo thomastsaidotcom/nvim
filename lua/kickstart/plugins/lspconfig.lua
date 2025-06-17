@@ -19,11 +19,9 @@ return {
 			-- Automatically install LSPs and related tools to stdpath for Neovim
 			-- Mason must be loaded before its dependents so we need to set it up here.
 			-- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-			{ "mason-org/mason.nvim", opts = {} },
-			"mason-org/mason-lspconfig.nvim",
+			{ "mason-org/mason.nvim", version = "1.11.0", opts = {} },
+			{ "mason-org/mason-lspconfig.nvim", version = "1.11.0" },
 			"WhoIsSethDaniel/mason-tool-installer.nvim",
-
-			{ "yioneko/nvim-vtsls" },
 
 			-- Useful status updates for LSP.
 			{ "j-hui/fidget.nvim", opts = {} },
@@ -211,10 +209,9 @@ return {
 			--  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-			require("lspconfig.configs").vtsls = require("vtsls").lspconfig -- set default server config, optional but recommended
-			-- If the lsp setup is taken over by other plugin, it is the same to call the counterpart setup function
-			require("lspconfig").vtsls.setup({ --[[ your custom server config here ]]
-			})
+			local vue_plugin_path = vim.fn.expand("$MASON/packages/vue-language-server")
+				.. "/node_modules/@vue/language-server"
+			local util = require("lspconfig.util")
 
 			-- Enable the following language servers
 			--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -253,6 +250,53 @@ return {
 						},
 					},
 				},
+
+				vue_ls = {
+					init_options = {
+						vue = {
+							hybridMode = true,
+						},
+					},
+				},
+				vtsls = {
+					filetypes = {
+						"javascript",
+						"javascriptreact",
+						"javascript.jsx",
+						"typescript",
+						"typescriptreact",
+						"typescript.tsx",
+						"vue",
+					},
+					root_dir = function(fname)
+						return util.root_pattern("tsconfig.json", "jsconfig.json")(fname)
+							or util.root_pattern("package.json", ".git")(fname)
+					end,
+					single_file_support = true,
+					settings = {
+						typescript = {
+							updateImportsOnFileMove = "always",
+						},
+						javascript = {
+							updateImportsOnFileMove = "always",
+						},
+						vtsls = {
+							enableMoveToFileCodeAction = true,
+							tsserver = {
+								globalPlugins = {
+									{
+										name = "@vue/typescript-plugin",
+										location = vue_plugin_path,
+										languages = { "vue" },
+										configNamespace = "typescript",
+										enableForWorkspaceTypeScriptVersions = true,
+									},
+								},
+							},
+						},
+					},
+				},
+				--
 			}
 
 			-- Ensure the servers and tools above are installed
@@ -291,4 +335,3 @@ return {
 		end,
 	},
 }
--- vim: ts=2 sts=2 sw=2 et
