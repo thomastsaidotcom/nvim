@@ -9,6 +9,14 @@ return {
 				"<cmd>Pick visit_paths cwd='' recency_weight=1<cr>",
 				desc = "Recent files",
 			},
+			{
+				"<C-q>",
+				function()
+					local mappings = require("mini.pick").get_picker_opts().mappings
+					vim.api.nvim_input(mappings.mark_all .. mappings.choose_marked)
+				end,
+				desc = "Choose all in mini.pick",
+			},
 		},
 		config = function()
 			-- Better Around/Inside textobjects
