@@ -1,5 +1,23 @@
 return {
 	"luukvbaal/nnn.nvim",
+	config = function()
+		local builtin = require("nnn").builtin
+		require("nnn").setup({
+			picker = {
+				cmd = "nnn",
+				style = {
+					width = 0.9,
+					height = 0.8,
+					border = "rounded",
+				},
+			},
+			mappings = {
+				{ "<CR>", builtin.open_in_tab }, -- Enter: new tab (your default)
+				{ "<C-r>", builtin.open }, -- Ctrl+e: current buffer
+			},
+		})
+	end,
+
 	keys = {
 		{
 			"<leader>e",
@@ -11,5 +29,4 @@ return {
 		},
 		{ "<leader>E", "<cmd>NnnPicker<cr>", desc = "Open nnn picker" },
 	},
-	opts = {},
 }
