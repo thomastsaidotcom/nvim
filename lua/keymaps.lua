@@ -64,8 +64,12 @@ vim.keymap.set("n", "<leader>bn", ":tabnew<cr>", { desc = "Open new buffer" })
 ---------------------------------------------------------
 
 ---------------------------------------------------------
--- Code Diagnostics
+-- Code
 ---------------------------------------------------------
+
+-- Code Action
+vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
+
 -- Set a lower updatetime for faster hover response
 vim.o.updatetime = 250
 
