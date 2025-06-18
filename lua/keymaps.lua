@@ -91,6 +91,14 @@ end, { desc = "Line Diagnostics" })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
+--  -- Disable auto comment on new lines
+vim.api.nvim_create_autocmd("FileType", {
+	desc = "remove formatoptions",
+	callback = function()
+		vim.opt.formatoptions:remove({ "c", "r", "o" })
+	end,
+})
+
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`
