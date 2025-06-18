@@ -40,6 +40,50 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 vim.keymap.set("n", "H", "gT", { desc = "Move to previous tab" })
 vim.keymap.set("n", "L", "gt", { desc = "Move to next tab" })
 
+---------------------------------------------------------
+-- Buffers
+---------------------------------------------------------
+-- Function to close all buffers except the current one
+local function close_other_buffers()
+	local bufs = vim.api.nvim_list_bufs()
+	local current_buf = vim.api.nvim_get_current_buf()
+	for _, i in ipairs(bufs) do
+		if i ~= current_buf then
+			vim.api.nvim_buf_delete(i, {})
+		end
+	end
+end
+
+-- Buffer management keybindings
+vim.keymap.set("n", "<leader>bo", close_other_buffers, { desc = "Close other buffers" })
+vim.keymap.set("n", "<leader>bd", ":bd<cr>", { desc = "Close current buffer" })
+vim.keymap.set("n", "<leader>bn", ":tabnew<cr>", { desc = "Open new buffer" })
+
+---------------------------------------------------------
+-- End Buffers
+---------------------------------------------------------
+
+---------------------------------------------------------
+-- Code Diagnostics
+---------------------------------------------------------
+-- Set a lower updatetime for faster hover response
+vim.o.updatetime = 250
+
+-- Auto-show diagnostics on hover (without focus)
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+	callback = function()
+		vim.diagnostic.open_float(nil, { focus = false })
+	end,
+})
+
+-- Manual keymap to focus diagnostic window with <leader>cd
+vim.keymap.set("n", "<leader>cd", function()
+	vim.diagnostic.open_float(nil, { focus = true })
+end, { desc = "Line Diagnostics" })
+---------------------------------------------------------
+-- End Code Diagnostics
+---------------------------------------------------------
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
