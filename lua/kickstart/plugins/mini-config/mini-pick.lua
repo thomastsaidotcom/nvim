@@ -10,6 +10,8 @@ end
 
 require("mini.pick").setup({
 	mappings = {
+		choose_in_tabpage = "<CR>",
+		choose = "<C-r>",
 		choose_all = { char = "<C-q>", func = choose_all },
 	},
 	window = {
