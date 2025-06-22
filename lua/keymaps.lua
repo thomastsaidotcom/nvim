@@ -40,6 +40,45 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 vim.keymap.set("n", "H", "gT", { desc = "Move to previous tab" })
 vim.keymap.set("n", "L", "gt", { desc = "Move to next tab" })
 
+-- Function to copy indentation from previous line
+local function copy_prev_indent()
+	local current_line = vim.fn.line(".")
+	local prev_line = vim.fn.getline(current_line - 1)
+	local indent = prev_line:match("^%s*")
+	local current_text = vim.fn.getline(current_line):gsub("^%s*", "")
+	vim.fn.setline(current_line, indent .. current_text)
+end
+
+-- Function to handle visual mode (multiple lines)
+local function copy_prev_indent_visual()
+	local start_line = vim.fn.line("'<")
+	local end_line = vim.fn.line("'>")
+
+	for line_num = start_line, end_line do
+		local prev_line = vim.fn.getline(line_num - 1)
+		local indent = prev_line:match("^%s*")
+		local current_text = vim.fn.getline(line_num):gsub("^%s*", "")
+		vim.fn.setline(line_num, indent .. current_text)
+	end
+end
+
+-- Normal mode
+vim.keymap.set("n", "<C-.>", copy_prev_indent, { desc = "Copy indentation from previous line" })
+
+-- Insert mode
+vim.keymap.set("i", "<C-.>", function()
+	copy_prev_indent()
+	-- Move cursor to end of line to continue typing
+	vim.cmd("normal! $")
+end, { desc = "Copy indentation from previous line" })
+
+-- Visual mode
+vim.keymap.set("v", "<C-.>", function()
+	copy_prev_indent_visual()
+	-- Exit visual mode
+	vim.cmd("normal! gv")
+end, { desc = "Copy indentation from previous line for selection" })
+
 ---------------------------------------------------------
 -- Buffers
 ---------------------------------------------------------
@@ -74,9 +113,21 @@ vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action
 vim.o.updatetime = 250
 
 -- Auto-show diagnostics on hover (without focus)
+local function has_floating_window()
+	for _, win in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+		local config = vim.api.nvim_win_get_config(win)
+		if config.relative ~= "" then -- This means it's a floating window
+			return true
+		end
+	end
+	return false
+end
+
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 	callback = function()
-		vim.diagnostic.open_float(nil, { focus = false })
+		if not has_floating_window() then
+			vim.diagnostic.open_float(nil, { focus = false })
+		end
 	end,
 })
 
