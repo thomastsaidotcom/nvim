@@ -31,7 +31,6 @@ Plugin lock file: `lazy-lock.json` (tracks exact plugin versions)
 
 Current custom plugins in `lua/custom/plugins/`:
 - `nnn.lua` - File manager integration (`<leader>e` for current dir, `<leader>E` for picker)
-- `supermaven.lua` - AI code completion (`Tab` to accept, `Ctrl+e` to clear)
 - `vim-fugitive.lua` - Git integration (auto-moves fugitive windows to new tabs)
 
 ## Key Mappings Summary
