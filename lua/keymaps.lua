@@ -179,6 +179,85 @@ vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 vim.keymap.set("n", "<leader>cd", function()
 	vim.diagnostic.open_float(nil, { focus = true })
 end, { desc = "Line Diagnostics" })
+
+-- Custom LSP rename with buffer input
+local function lsp_rename_with_buffer()
+	local current_name = vim.fn.expand("<cword>")
+	if current_name == "" then
+		vim.notify("No symbol under cursor", vim.log.levels.WARN)
+		return
+	end
+
+	-- Create a new buffer
+	local buf = vim.api.nvim_create_buf(false, true)
+	local win = vim.api.nvim_open_win(buf, true, {
+		relative = "cursor",
+		width = math.max(20, #current_name + 10),
+		height = 1,
+		row = 1,
+		col = 0,
+		style = "minimal",
+		border = "rounded",
+		title = " LSP Rename ",
+		title_pos = "center",
+	})
+
+	-- Set buffer content to current symbol name
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, { current_name })
+
+	-- Position cursor at end of the name
+	vim.api.nvim_win_set_cursor(win, { 1, #current_name })
+
+	-- Set buffer options
+	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
+	vim.api.nvim_buf_set_option(buf, "filetype", "text")
+
+	-- Set up keymaps for the rename buffer
+	local opts = { buffer = buf, nowait = true }
+
+	-- Function to execute rename
+	local function execute_rename()
+		local new_name = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1]
+		vim.api.nvim_win_close(win, true)
+
+		if new_name and new_name ~= "" and new_name ~= current_name then
+			vim.lsp.buf.rename(new_name)
+		end
+	end
+
+	-- Execute rename on Enter
+	vim.keymap.set("n", "<CR>", execute_rename, opts)
+
+	-- Listen for save events on the buffer
+	vim.api.nvim_create_autocmd({ "BufWriteCmd", "BufWritePre" }, {
+		buffer = buf,
+		callback = function()
+			execute_rename()
+		end,
+	})
+
+	-- Handle quit commands with save (:x, :wq, ZZ)
+	vim.api.nvim_create_autocmd("QuitPre", {
+		buffer = buf,
+		callback = function()
+			execute_rename()
+		end,
+	})
+
+	-- Auto-close on buffer leave
+	vim.api.nvim_create_autocmd("BufLeave", {
+		buffer = buf,
+		once = true,
+		callback = function()
+			if vim.api.nvim_win_is_valid(win) then
+				vim.api.nvim_win_close(win, true)
+			end
+		end,
+	})
+end
+
+vim.keymap.set("n", "<leader>cr", lsp_rename_with_buffer, { desc = "LSP [R]ename with buffer input" })
+
 ---------------------------------------------------------
 -- End Code Diagnostics
 ---------------------------------------------------------
