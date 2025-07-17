@@ -8,6 +8,50 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
+---------------------------------------------------------
+-- Navigation
+---------------------------------------------------------
+
+-- Diagnostic navigation
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+vim.keymap.set("n", "]e", function()
+	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Next error" })
+vim.keymap.set("n", "[e", function()
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { desc = "Previous error" })
+vim.keymap.set("n", "]w", function()
+	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+end, { desc = "Next warning" })
+vim.keymap.set("n", "[w", function()
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
+end, { desc = "Previous warning" })
+
+-- Quickfix navigation
+vim.keymap.set("n", "]q", ":cnext<CR>", { desc = "Next quickfix item" })
+vim.keymap.set("n", "[q", ":cprev<CR>", { desc = "Previous quickfix item" })
+
+-- Git hunk navigation
+vim.keymap.set("n", "]h", function()
+	if vim.wo.diff then
+		vim.cmd.normal("]c")
+	else
+		require("gitsigns").nav_hunk("next")
+	end
+end, { desc = "Next git hunk" })
+vim.keymap.set("n", "[h", function()
+	if vim.wo.diff then
+		vim.cmd.normal("[c")
+	else
+		require("gitsigns").nav_hunk("prev")
+	end
+end, { desc = "Previous git hunk" })
+
+---------------------------------------------------------
+-- End Navigation
+---------------------------------------------------------
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
