@@ -1,33 +1,6 @@
 return {
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
-		keys = {
-			{ "<leader>ff", "<cmd>Pick files<cr>", desc = "Find files" },
-			{ "<leader>fg", "<cmd>Pick grep_live<cr>", desc = "Live grep" },
-			{
-				"<leader>fr",
-				"<cmd>Pick visit_paths cwd='' recency_weight=1<cr>",
-				desc = "Recent files",
-			},
-			{
-				"<C-q>",
-				function()
-					local mappings = require("mini.pick").get_picker_opts().mappings
-					vim.api.nvim_input(mappings.mark_all .. mappings.choose_marked)
-				end,
-				desc = "Choose all in mini.pick",
-			},
-			{
-				"gi",
-				"<cmd>Pick lsp scope='implementation'<cr>",
-				desc = "Go to implementation",
-			},
-			{ "gd", "<cmd>Pick lsp scope='definition'<cr>", desc = "Go to definition" },
-			{ "gR", "<cmd>Pick lsp scope='references'<cr>", desc = "Go to references" },
-			{ "gt", "<cmd>Pick lsp scope='type_definition'<cr>", desc = "Go to type definition" },
-			{ "<leader>ls", "<cmd>Pick lsp scope='document_symbol'<cr>", desc = "Document symbols" },
-			{ "<leader>lS", "<cmd>Pick lsp scope='workspace_symbol'<cr>", desc = "Workspace symbols" },
-		},
 		config = function()
 			-- Better Around/Inside textobjects
 			--
@@ -37,7 +10,6 @@ return {
 			--  - ci'  - [C]hange [I]nside [']quote
 			require("mini.ai").setup({ n_lines = 500 })
 
-			require("kickstart.plugins.mini-config.mini-pick")
 			require("kickstart.plugins.mini-config.mini-surround")
 
 			-- Simple and easy statusline.
