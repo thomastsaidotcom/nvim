@@ -66,6 +66,34 @@ vim.o.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
 
+-- Show tabline and display only filename in tabs
+vim.o.showtabline = 2
+if vim.fn.has('gui_running') == 1 then
+  vim.o.guitablabel = '%t'
+end
+
+-- Custom tabline function to show only filename
+function _G.custom_tabline()
+  local s = ''
+  for i = 1, vim.fn.tabpagenr('$') do
+    local winnr = vim.fn.tabpagewinnr(i)
+    local bufnr = vim.fn.tabpagebuflist(i)[winnr]
+    local filename = vim.fn.bufname(bufnr)
+    local name = filename == '' and '[No Name]' or vim.fn.fnamemodify(filename, ':t')
+    
+    if i == vim.fn.tabpagenr() then
+      s = s .. '%#TabLineSel#'
+    else
+      s = s .. '%#TabLine#'
+    end
+    s = s .. ' ' .. i .. ': ' .. name .. ' '
+  end
+  s = s .. '%#TabLineFill#%T'
+  return s
+end
+
+vim.o.tabline = '%!v:lua.custom_tabline()'
+
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
