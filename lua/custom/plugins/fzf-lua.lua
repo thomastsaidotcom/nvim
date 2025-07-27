@@ -26,13 +26,20 @@ return {
 				["default"] = function(selected, opts)
 					local current_buf = vim.api.nvim_get_current_buf()
 					local buf_name = vim.api.nvim_buf_get_name(current_buf)
-					
+
 					-- If buffer has a name (file is loaded), open in new tab
 					if buf_name ~= "" then
 						vim.cmd("tabnew")
 					end
-					require("fzf-lua").actions.file_edit(selected, opts)
+					require("fzf-lua").actions.file_edit_or_qf(selected, opts)
 				end,
+			},
+		},
+		keymap = {
+			fzf = {
+				["ctrl-d"] = "preview-page-down",
+				["ctrl-u"] = "preview-page-up",
+				["ctrl-q"] = "select-all+accept",
 			},
 		},
 	},
