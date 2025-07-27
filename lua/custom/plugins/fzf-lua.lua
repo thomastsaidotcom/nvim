@@ -18,7 +18,11 @@ return {
 			fullscreen = true,
 			preview = {
 				layout = "vertical", -- horizontal|vertical|flex
+				vertical = "up:60%",
 			},
+		},
+		fzf_opts = {
+			["--layout"] = "reverse-list",
 		},
 		files = {
 			actions = {
