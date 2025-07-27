@@ -317,6 +317,7 @@ return {
 				"stylua", -- Used to format Lua code
 				"prettierd", -- Prettier daemon for formatting
 				"eslint_d", -- ESLint daemon for linting and auto-fixing
+				"markdownlint", -- Markdown linting
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
