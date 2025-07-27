@@ -1,9 +1,37 @@
+-- Function to get visual selection text
+local function get_visual_selection()
+	-- Save the current register
+	local save_reg = vim.fn.getreg('"')
+	local save_regtype = vim.fn.getregtype('"')
+	
+	-- Yank the visual selection
+	vim.cmd('normal! "xy')
+	local selection = vim.fn.getreg('x')
+	
+	-- Restore the register
+	vim.fn.setreg('"', save_reg, save_regtype)
+	
+	-- Clean up the selection (remove newlines and escape special chars)
+	selection = selection:gsub('\n', ' '):gsub('  +', ' '):gsub('^%s+', ''):gsub('%s+$', '')
+	
+	return selection
+end
+
 return {
 	"ibhagwan/fzf-lua",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	keys = {
 		{ "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find files" },
-		{ "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
+		{ "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live grep", mode = "n" },
+		{ "<leader>fg", function()
+			local selection = get_visual_selection()
+			require('fzf-lua').live_grep({ search = selection })
+		end, desc = "Live grep with selection", mode = "v" },
+		{ "<leader>/", "<cmd>FzfLua blines<cr>", desc = "Search in current buffer", mode = "n" },
+		{ "<leader>/", function()
+			local selection = get_visual_selection()
+			require('fzf-lua').blines({ query = selection })
+		end, desc = "Search in current buffer with selection", mode = "v" },
 		{ "<leader>fr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },
 		{ "<leader>fc", "<cmd>FzfLua colorschemes<cr>", desc = "Find colorschemes" },
 		{ "gR", "<cmd>FzfLua lsp_references<cr>", desc = "Go to references" },
