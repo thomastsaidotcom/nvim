@@ -41,22 +41,16 @@ return {
         desc = 'Previous git hunk'
       },
     },
-    config = function()
-      -- Set up custom highlight groups for line number backgrounds
-      vim.api.nvim_set_hl(0, 'GitSignsAddNr', { bg = '#2d5a16', fg = '#ffffff' })
-      vim.api.nvim_set_hl(0, 'GitSignsChangeNr', { bg = '#5c3a00', fg = '#ffffff' })
-      vim.api.nvim_set_hl(0, 'GitSignsDeleteNr', { bg = '#6b1a1a', fg = '#ffffff' })
-      
-      require('gitsigns').setup({
-        signs = {
-          add = { text = '+' },
-          change = { text = '~' },
-          delete = { text = '_' },
-          topdelete = { text = '‾' },
-          changedelete = { text = '~' },
-        },
-        numhl = true, -- Enable line number highlighting
-        linehl = false, -- Disable line highlighting (we only want line numbers)
+    opts = {
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+      numhl = true, -- Enable line number highlighting
+      linehl = false, -- Disable line highlighting (we only want line numbers)
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
 
@@ -65,7 +59,6 @@ return {
           opts.buffer = bufnr
           vim.keymap.set(mode, l, r, opts)
         end
-
 
         -- Actions
         -- visual mode
@@ -91,7 +84,12 @@ return {
         map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
         map('n', '<leader>tD', gitsigns.preview_hunk_inline, { desc = '[T]oggle git show [D]eleted' })
       end,
-      })
+    },
+    config = function()
+      -- Set up custom highlight groups for line number backgrounds
+      vim.api.nvim_set_hl(0, 'GitSignsAddNr', { bg = '#2d5a16', fg = '#ffffff' })
+      vim.api.nvim_set_hl(0, 'GitSignsChangeNr', { bg = '#5c3a00', fg = '#ffffff' })
+      vim.api.nvim_set_hl(0, 'GitSignsDeleteNr', { bg = '#6b1a1a', fg = '#ffffff' })
     end,
   },
 }
