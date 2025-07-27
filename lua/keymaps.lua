@@ -150,6 +150,11 @@ vim.keymap.set("n", "<leader>bn", ":tabnew<cr>", { desc = "Open new buffer" })
 -- Code
 ---------------------------------------------------------
 
+-- LSP navigation
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
+vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "Go to implementation" })
+vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, { desc = "Go to type definition" })
+
 -- Code Action
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Actions" })
 
