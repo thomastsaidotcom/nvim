@@ -7,17 +7,17 @@ statusline.setup({
 	use_icons = vim.g.have_nerd_font,
 	content = {
 		active = function()
+			local relative_path = vim.fn.fnamemodify(vim.fn.expand("%"), ":.") -- Force relative path
 			local mode = statusline.section_mode({ trunc_width = 120 })
-			local fileinfo = statusline.section_fileinfo({ trunc_width = 120 })
 			local git = statusline.section_git({ trunc_width = 40 })
 			local diagnostics = statusline.section_diagnostics({ trunc_width = 75 })
 
 			return statusline.combine_groups({
-				mode,
+				relative_path,
 				"%=",
-				fileinfo,
 				git,
 				diagnostics,
+				mode,
 			})
 		end,
 	},
