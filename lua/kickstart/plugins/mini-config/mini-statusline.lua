@@ -31,17 +31,32 @@ statusline.setup({
 			local gitsigns_status = vim.b.gitsigns_status_dict
 			if gitsigns_status then
 				local branch = gitsigns_status.head or ""
-				local added = gitsigns_status.added or 0
-				local changed = gitsigns_status.changed or 0
-				local removed = gitsigns_status.removed or 0
+				
+				-- Get actual hunk counts from gitsigns cache
+				local added_hunks = 0
+				local changed_hunks = 0
+				local removed_hunks = 0
+				
+				local cache = require("gitsigns.cache").cache[vim.api.nvim_get_current_buf()]
+				if cache and cache.hunks then
+					for _, hunk in ipairs(cache.hunks) do
+						if hunk.added and hunk.added.count > 0 and (not hunk.removed or hunk.removed.count == 0) then
+							added_hunks = added_hunks + 1
+						elseif hunk.removed and hunk.removed.count > 0 and (not hunk.added or hunk.added.count == 0) then
+							removed_hunks = removed_hunks + 1
+						elseif hunk.added and hunk.removed then
+							changed_hunks = changed_hunks + 1
+						end
+					end
+				end
 				
 				local parts = {}
 				if branch ~= "" then
 					table.insert(parts, " " .. branch)
 				end
-				if added > 0 then table.insert(parts, "%#DiffAdd# +" .. added .. " %*") end
-				if changed > 0 then table.insert(parts, "%#DiffChange# ~" .. changed .. " %*") end
-				if removed > 0 then table.insert(parts, "%#DiffDelete# -" .. removed .. " %*") end
+				if added_hunks > 0 then table.insert(parts, "%#DiffAdd# +" .. added_hunks .. " %*") end
+				if changed_hunks > 0 then table.insert(parts, "%#DiffChange# ~" .. changed_hunks .. " %*") end
+				if removed_hunks > 0 then table.insert(parts, "%#DiffDelete# -" .. removed_hunks .. " %*") end
 				
 				if #parts > 0 then
 					git = table.concat(parts, "")
