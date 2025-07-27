@@ -1,8 +1,8 @@
 return {
 	"luukvbaal/nnn.nvim",
-	config = function()
+	opts = function()
 		local builtin = require("nnn").builtin
-		require("nnn").setup({
+		return {
 			picker = {
 				cmd = "nnn",
 				style = {
@@ -15,7 +15,7 @@ return {
 				{ "<CR>", builtin.open_in_tab }, -- Enter: new tab (your default)
 				{ "<C-r>", builtin.open }, -- Ctrl+e: current buffer
 			},
-		})
+		}
 	end,
 
 	keys = {

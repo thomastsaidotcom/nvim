@@ -4,27 +4,23 @@ return {
   {
     "EdenEast/nightfox.nvim",
     priority = 1000,
-    config = function()
-      require("nightfox").setup({
-        options = {
-          transparent = false,
-          terminal_colors = true,
-        }
-      })
-    end,
+    opts = {
+      options = {
+        transparent = false,
+        terminal_colors = true,
+      }
+    },
   },
 
   -- VSCode theme
   {
     "Mofiqul/vscode.nvim",
     priority = 1000,
-    config = function()
-      require("vscode").setup({
-        transparent = false,
-        italic_comments = true,
-        disable_nvimtree_bg = true,
-      })
-    end,
+    opts = {
+      transparent = false,
+      italic_comments = true,
+      disable_nvimtree_bg = true,
+    },
   },
 
   -- Forest Night theme
@@ -64,13 +60,11 @@ return {
     "uloco/bluloco.nvim",
     priority = 1000,
     dependencies = { "rktjmp/lush.nvim" },
-    config = function()
-      require("bluloco").setup({
-        style = "auto",
-        transparent = false,
-        italics = false,
-        terminal = vim.fn.has("gui_running") == 1,
-      })
-    end,
+    opts = {
+      style = "auto",
+      transparent = false,
+      italics = false,
+      terminal = vim.fn.has("gui_running") == 1,
+    },
   },
 }
