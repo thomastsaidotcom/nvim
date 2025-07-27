@@ -32,21 +32,6 @@ end, { desc = "Previous warning" })
 vim.keymap.set("n", "]q", ":cnext<CR>", { desc = "Next quickfix item" })
 vim.keymap.set("n", "[q", ":cprev<CR>", { desc = "Previous quickfix item" })
 
--- Git hunk navigation
-vim.keymap.set("n", "]h", function()
-	if vim.wo.diff then
-		vim.cmd.normal("]c")
-	else
-		require("gitsigns").nav_hunk("next")
-	end
-end, { desc = "Next git hunk" })
-vim.keymap.set("n", "[h", function()
-	if vim.wo.diff then
-		vim.cmd.normal("[c")
-	else
-		require("gitsigns").nav_hunk("prev")
-	end
-end, { desc = "Previous git hunk" })
 
 ---------------------------------------------------------
 -- End Navigation

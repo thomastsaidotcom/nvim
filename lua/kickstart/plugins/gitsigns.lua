@@ -16,6 +16,31 @@
 return {
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    keys = {
+      -- Git hunk navigation
+      {
+        ']h',
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal(']c')
+          else
+            require('gitsigns').nav_hunk('next')
+          end
+        end,
+        desc = 'Next git hunk'
+      },
+      {
+        '[h',
+        function()
+          if vim.wo.diff then
+            vim.cmd.normal('[c')
+          else
+            require('gitsigns').nav_hunk('prev')
+          end
+        end,
+        desc = 'Previous git hunk'
+      },
+    },
     config = function()
       -- Set up custom highlight groups for line number backgrounds
       vim.api.nvim_set_hl(0, 'GitSignsAddNr', { bg = '#2d5a16', fg = '#ffffff' })
@@ -41,22 +66,6 @@ return {
           vim.keymap.set(mode, l, r, opts)
         end
 
-        -- Navigation
-        map('n', ']c', function()
-          if vim.wo.diff then
-            vim.cmd.normal { ']c', bang = true }
-          else
-            gitsigns.nav_hunk 'next'
-          end
-        end, { desc = 'Jump to next git [c]hange' })
-
-        map('n', '[c', function()
-          if vim.wo.diff then
-            vim.cmd.normal { '[c', bang = true }
-          else
-            gitsigns.nav_hunk 'prev'
-          end
-        end, { desc = 'Jump to previous git [c]hange' })
 
         -- Actions
         -- visual mode
