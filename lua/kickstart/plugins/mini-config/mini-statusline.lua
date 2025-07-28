@@ -62,7 +62,31 @@ statusline.setup({
 					git = table.concat(parts, "")
 				end
 			end
-			local diagnostics = statusline.section_diagnostics({})
+			-- Custom diagnostics without beaker, using proper icons
+			local diagnostics = ""
+			local counts = vim.diagnostic.count(0)
+			local error_count = counts[vim.diagnostic.severity.ERROR] or 0
+			local warn_count = counts[vim.diagnostic.severity.WARN] or 0
+			local info_count = counts[vim.diagnostic.severity.INFO] or 0
+			local hint_count = counts[vim.diagnostic.severity.HINT] or 0
+			
+			local parts = {}
+			if error_count > 0 then
+				table.insert(parts, error_count .. " 🚨")
+			end
+			if warn_count > 0 then
+				table.insert(parts, warn_count .. " 🟡")
+			end
+			if info_count > 0 then
+				table.insert(parts, info_count .. " 🔵")
+			end
+			if hint_count > 0 then
+				table.insert(parts, hint_count .. " 💡")
+			end
+			
+			if #parts > 0 then
+				diagnostics = table.concat(parts, "  ")
+			end
 			local mode = statusline.section_mode({})
 
 			return statusline.combine_groups({
