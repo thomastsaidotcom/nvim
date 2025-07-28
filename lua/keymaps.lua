@@ -246,7 +246,7 @@ vim.keymap.set("n", "<leader>cr", lsp_rename_with_buffer, { desc = "LSP [R]ename
 ---------------------------------------------------------
 
 -- Command to open :messages in a buffer
-vim.api.nvim_create_user_command('messagesB', function()
+vim.api.nvim_create_user_command('MessagesB', function()
   -- Create a new buffer
   local buf = vim.api.nvim_create_buf(false, true)
   
@@ -283,6 +283,31 @@ vim.api.nvim_create_user_command('messagesB', function()
   -- Move cursor to bottom
   vim.api.nvim_win_set_cursor(0, {#lines, 0})
 end, { desc = 'Open :messages in a buffer window' })
+
+-- Function to copy last message to clipboard
+local function copy_last_message()
+  local messages = vim.fn.execute('messages')
+  local lines = vim.split(messages, '\n')
+  
+  -- Find the last non-empty line
+  local last_message = ""
+  for i = #lines, 1, -1 do
+    if lines[i] and lines[i]:match('%S') then
+      last_message = lines[i]
+      break
+    end
+  end
+  
+  if last_message ~= "" then
+    vim.fn.setreg('+', last_message)
+    vim.notify('Copied last message to clipboard: ' .. last_message:sub(1, 50) .. (last_message:len() > 50 and '...' or ''))
+  else
+    vim.notify('No messages found', vim.log.levels.WARN)
+  end
+end
+
+-- Keymap to copy last message
+vim.keymap.set('n', '<leader>mc', copy_last_message, { desc = 'Copy last message to clipboard' })
 
 ---------------------------------------------------------
 -- End Custom Commands
