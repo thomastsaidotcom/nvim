@@ -52,7 +52,7 @@ statusline.setup({
 				
 				local parts = {}
 				if branch ~= "" then
-					table.insert(parts, " " .. branch)
+					table.insert(parts, "\u{e0a0} " .. branch)
 				end
 				if added_hunks > 0 then table.insert(parts, "%#DiffAdd# +" .. added_hunks .. " %*") end
 				if changed_hunks > 0 then table.insert(parts, "%#DiffChange# ~" .. changed_hunks .. " %*") end
@@ -94,7 +94,7 @@ statusline.setup({
 				"%=",
 				fileinfo and ("%#MiniStatuslineFileinfo# " .. fileinfo .. " ") or "",
 				lsp_info ~= "" and ("%#MiniStatuslineLSP# " .. lsp_info .. " ") or "",
-				git and git or "",
+				git and ("%#MiniStatuslineInactive# " .. git .. " ") or "",
 				diagnostics and ("%#MiniStatuslineDevinfo# " .. diagnostics .. " ") or "",
 				"%#MiniStatuslineModeNormal# " .. mode .. " ",
 			})
