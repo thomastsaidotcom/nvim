@@ -242,6 +242,53 @@ end
 vim.keymap.set("n", "<leader>cr", lsp_rename_with_buffer, { desc = "LSP [R]ename with buffer input" })
 
 ---------------------------------------------------------
+-- Custom Commands
+---------------------------------------------------------
+
+-- Command to open :messages in a buffer
+vim.api.nvim_create_user_command('messagesB', function()
+  -- Create a new buffer
+  local buf = vim.api.nvim_create_buf(false, true)
+  
+  -- Open the buffer in a new window
+  vim.api.nvim_open_win(buf, true, {
+    relative = 'editor',
+    width = vim.o.columns - 4,
+    height = vim.o.lines - 6,
+    row = 2,
+    col = 2,
+    style = 'minimal',
+    border = 'rounded',
+    title = ' Messages ',
+    title_pos = 'center',
+  })
+  
+  -- Get messages output
+  local messages = vim.fn.execute('messages')
+  local lines = vim.split(messages, '\n')
+  
+  -- Set buffer content
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  
+  -- Set buffer options
+  vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+  vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+  vim.api.nvim_buf_set_option(buf, 'swapfile', false)
+  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+  vim.api.nvim_buf_set_option(buf, 'filetype', 'messages')
+  
+  -- Set buffer name
+  vim.api.nvim_buf_set_name(buf, '[Messages]')
+  
+  -- Move cursor to bottom
+  vim.api.nvim_win_set_cursor(0, {#lines, 0})
+end, { desc = 'Open :messages in a buffer window' })
+
+---------------------------------------------------------
+-- End Custom Commands
+---------------------------------------------------------
+
+---------------------------------------------------------
 -- End Code Diagnostics
 ---------------------------------------------------------
 
