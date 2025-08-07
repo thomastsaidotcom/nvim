@@ -21,7 +21,11 @@ return {
 	"ibhagwan/fzf-lua",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	keys = {
-		{ "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find files" },
+		{ "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find files", mode = "n" },
+		{ "<leader>ff", function()
+			local selection = get_visual_selection()
+			require('fzf-lua').files({ query = selection })
+		end, desc = "Find files with selection", mode = "v" },
 		{ "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live grep", mode = "n" },
 		{ "<leader>fg", function()
 			local selection = get_visual_selection()
