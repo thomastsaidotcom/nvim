@@ -309,6 +309,20 @@ end
 -- Keymap to copy last message
 vim.keymap.set('n', '<leader>mc', copy_last_message, { desc = 'Copy last message to clipboard' })
 
+-- Function to yank relative path of current buffer
+local function yank_relative_path()
+  local relative_path = vim.fn.expand('%:.')
+  if relative_path == '' then
+    vim.notify('No file path available', vim.log.levels.WARN)
+    return
+  end
+  vim.fn.setreg('+', relative_path)
+  vim.notify('Copied relative path: ' .. relative_path)
+end
+
+-- Keymap to yank relative path
+vim.keymap.set('n', '<leader>yp', yank_relative_path, { desc = 'Yank relative path' })
+
 ---------------------------------------------------------
 -- End Custom Commands
 ---------------------------------------------------------
