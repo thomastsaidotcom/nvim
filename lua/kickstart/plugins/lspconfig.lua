@@ -174,10 +174,6 @@ return {
 			--  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-			local vue_plugin_path = vim.fn.expand("$MASON/packages/vue-language-server")
-				.. "/node_modules/@vue/language-server"
-			local util = require("lspconfig.util")
-
 			-- Enable the following language servers
 			--  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
 			--
@@ -198,8 +194,17 @@ return {
 				--    https://github.com/pmizio/typescript-tools.nvim
 				--
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
-				-- ts_ls = {},
-				--
+				-- Using vtsls instead - faster and more feature-rich
+				vtsls = {
+					filetypes = {
+						'javascript',
+						'javascriptreact',
+						'javascript.jsx',
+						'typescript',
+						'typescriptreact',
+						'typescript.tsx',
+					},
+				},
 
 				lua_ls = {
 					-- cmd = { ... },
@@ -212,14 +217,6 @@ return {
 							},
 							-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
 							-- diagnostics = { disable = { 'missing-fields' } },
-						},
-					},
-				},
-
-				volar = {
-					init_options = {
-						vue = {
-							hybridMode = true,
 						},
 					},
 				},
@@ -250,7 +247,6 @@ return {
 				"stylua", -- Used to format Lua code
 				"prettierd", -- Prettier daemon for formatting
 				"eslint_d", -- ESLint daemon for linting and auto-fixing
-				"markdownlint", -- Markdown linting
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
@@ -265,6 +261,7 @@ return {
 						-- certain features of an LSP (for example, turning off formatting for ts_ls)
 						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 						vim.lsp.config[server_name] = server
+						vim.lsp.enable(server_name)
 					end,
 				},
 			})
